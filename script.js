@@ -13,8 +13,6 @@ let submitdata = {
 }
 
 let options = {
-    sceneID: "",
-    gmHide: true,
     fontColor: "#777777",
     fontSize: "28px",
     bgImg: "",
@@ -25,31 +23,24 @@ let options = {
     bgColor: "#6e6e6e",
     bgOpacity: 0.7,
     fadeIn: 400,
-    delay: 4000,
+    delay: 1500,
     fadeOut: 1000,
-    volume: 1.0,
-    audioLoop: true,
-    skippable: true,
-    gmEndAll: true,
-    showUI: false,
-    activateScene: false,
-    content: "",
-    audio: "",
-    fromSocket: false,
-    users: [],
     scene: "",
 }
 
 Hooks.once("init", async () => {
-    game.scene.forEach((scene) =>{
-        if(scene.flags[`slideshow-background`]?.slideshowEnabled===true){
-            currentscene=scene;
-        }
-    });
     console.log(" Slideshow Background - initialized ");
     setLoop(function(){transitionBackground()}, 30000);
     initHooks();
 });
+
+Hooks.once("ready", async () => {
+    game.scenes.forEach((scene) =>{
+        if(scene.flags[`slideshow-background`]?.slideshowEnabled===true){
+            currentscene=scene;
+        }
+    });
+})
 
 export const initHooks = () => {
 	Hooks.once("socketlib.ready", registerSocket);
@@ -101,10 +92,12 @@ Hooks.on("closeSceneConfig", (app, html) =>{
     let time = Number(html.find(".time-input")[0].value);
     let enabled = html.find(".slideshow-enabled")[0];
     if(enabled.checked === true){
+        //Check there is not a slideshow set up already
         if(currentscene==undefined){
             ui.notifications.warn("A scene is already set as a slideshow");
             return;
         }
+        options.bgColor=app.scene.backgroundColor;
         currentscene = app.scene;
         app.object.setFlag("slideshow-background", "slideshowEnabled", true);
         app.object.setFlag("slideshow-background", "slideshowTime", time);
@@ -213,7 +206,7 @@ export function fade(options){
             $("#scene-transitions")?.fadeOut(options.fadeOut, () => {
                 $("#scene-transitions")?.remove();
             });
-        }, 1500)
+        }, options.delay)
         //----------------------------------------
     }
 }
