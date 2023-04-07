@@ -1,0 +1,30 @@
+{
+  "id": "slideshow-background",
+  "title": "Slideshow Background",
+  "description": "A module that allows the background image to be swapped out like a slideshow. Code needs to be cleaned up/organized",
+  "authors": [
+    {
+    "name": "OniTurtle"
+    }
+    ],
+  "version": "0.0.1",
+  "compatibility": {
+    "minimum": "9",
+    "verified": "11"
+  },
+  "esmodules": [
+    "script.js"
+  ],
+  "url": "dcooperdnd.com",
+  "socket": true,
+  "relationships": {
+    "requires": [
+      {
+        "id": "socketlib",
+        "type": "module",
+        "manifest": "https://raw.githubusercontent.com/manuelVo/foundryvtt-socketlib/develop/module.json",
+        "compatibility": {}
+      }
+    ]
+  }
+}
