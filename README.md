@@ -1,7 +1,7 @@
-#Slideshow Background
+# Slideshow Background
 A module for FoundryVTT that allows the host to setup a scene as a slideshow
 
-##Usage
+## Usage
 * Create a journal entry called slideshow
 * Create a page in that entry called slideshow-page with the type txt
 * Insert images into that page
