@@ -6,6 +6,7 @@ var count=0;
 var isopen=false;
 var interval;
 var currentscene;
+var settingsOpen=false;
 
 let submitdata = {
     "name": "",
@@ -30,7 +31,6 @@ let options = {
 
 Hooks.once("init", async () => {
     console.log(" Slideshow Background - initialized ");
-    setLoop(function(){transitionBackground()}, 30000);
     initHooks();
 });
 
@@ -40,6 +40,9 @@ Hooks.once("ready", async () => {
             currentscene=scene;
         }
     });
+    if(currentscene!=undefined){
+        setLoop(function(){transitionBackground()}, currentscene.getFlag("slideshow-background", "slideshowTime"));
+    };
 })
 
 export const initHooks = () => {
@@ -48,6 +51,7 @@ export const initHooks = () => {
 };
 
 Hooks.on("renderSceneConfig", (app, html) =>{
+    settingsOpen=true;
     isopen = true;
     const activeTab = html.find(".tab.active");
 
@@ -72,7 +76,7 @@ Hooks.on("renderSceneConfig", (app, html) =>{
 
     boxlabel.innerHTML = "Slideshow background enabled";
     checkbox.setAttribute("type", "checkbox");
-    checkbox.setAttribute("class", "slideshow-enabled");
+    checkbox.setAttribute("class", "slideshowEnabled");
     checkbox.checked = app.object.getFlag("slideshow-background", "slideshowEnabled"); //Saves checkbox state
     //---------------------------------
 
@@ -89,16 +93,17 @@ Hooks.on("renderSceneConfig", (app, html) =>{
 })
 
 Hooks.on("closeSceneConfig", (app, html) =>{
+    settingsOpen=false;
     let time = Number(html.find(".time-input")[0].value);
-    let enabled = html.find(".slideshow-enabled")[0];
+    let enabled = html.find(".slideshowEnabled")[0];
     if(enabled.checked === true){
         //Check there is not a slideshow set up already
-        if(currentscene==undefined){
+        if(currentscene!=undefined && currentscene!=app.object){
             ui.notifications.warn("A scene is already set as a slideshow");
             return;
         }
-        options.bgColor=app.scene.backgroundColor;
-        currentscene = app.scene;
+        options.bgColor=app.object.backgroundColor;
+        currentscene = app.object;
         app.object.setFlag("slideshow-background", "slideshowEnabled", true);
         app.object.setFlag("slideshow-background", "slideshowTime", time);
         setLoop(function(){transitionBackground()}, time==undefined?30000:time);
@@ -108,7 +113,7 @@ Hooks.on("closeSceneConfig", (app, html) =>{
 })
 
 function transitionBackground(){
-    if(!game.user?.isGM){
+    if(!game.user?.isGM || settingsOpen){
         return;
     }
     var scenes = game.scenes.contents.filter((scene) => {
