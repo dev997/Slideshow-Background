@@ -1,21 +1,21 @@
 {
   "id": "slideshow-background",
   "title": "Slideshow Background",
-  "description": "A module that allows the background image to be swapped out like a slideshow. Code needs to be cleaned up/organized",
+  "description": "A module that allows the background image to be swapped out like a slideshow.",
   "authors": [
     {
     "name": "OniTurtle"
     }
     ],
-  "version": "0.0.1",
+  "version": "0.1.0",
   "compatibility": {
-    "minimum": "9",
-    "verified": "11"
+    "minimum": "10",
+    "verified": "10"
   },
   "esmodules": [
     "script.js"
   ],
-  "url": "dcooperdnd.com",
+  "url": "https://github.com/dev997/Slideshow-Background",
   "socket": true,
   "relationships": {
     "requires": [
