@@ -30,7 +30,6 @@ let options = {
 
 Hooks.once("init", async () => {
     console.log(" Slideshow Background - initialized ");
-    setLoop(function(){transitionBackground()}, 30000);
     initHooks();
 });
 
@@ -40,6 +39,9 @@ Hooks.once("ready", async () => {
             currentscene=scene;
         }
     });
+    if(currentscene!=undefined){
+        setLoop(function(){transitionBackground()}, currentscene.getFlag("slideshow-background", "slideshowTime"));
+    };
 })
 
 export const initHooks = () => {
@@ -90,15 +92,15 @@ Hooks.on("renderSceneConfig", (app, html) =>{
 
 Hooks.on("closeSceneConfig", (app, html) =>{
     let time = Number(html.find(".time-input")[0].value);
-    let enabled = html.find(".slideshow-enabled")[0];
+    let enabled = html.find(".slideshowEnabled")[0];
     if(enabled.checked === true){
         //Check there is not a slideshow set up already
-        if(currentscene==undefined){
+        if(currentscene!=undefined && currentscene!=app.object){
             ui.notifications.warn("A scene is already set as a slideshow");
             return;
         }
         options.bgColor=app.scene.backgroundColor;
-        currentscene = app.scene;
+        currentscene = app.object;
         app.object.setFlag("slideshow-background", "slideshowEnabled", true);
         app.object.setFlag("slideshow-background", "slideshowTime", time);
         setLoop(function(){transitionBackground()}, time==undefined?30000:time);
